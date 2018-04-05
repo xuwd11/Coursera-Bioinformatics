@@ -1,0 +1,762 @@
+%!PS-Adobe-2.0 EPSF-2.0
+%%Title: makelogo 9.22
+%%Creator: Tom Schneider, toms@ncifcrf.gov
+%%BoundingBox:   227   510   544   737
+%%Pages: atend
+%%DocumentFonts:
+%%EndComments
+/llx 226.8 def
+/lly 510.2 def
+/urx 544.3 def
+/ury 737.0 def
+% * alpro 1.90
+% * .fasta: aligned consensus sequences
+% *Rv1733c
+% * DNA ALIGNMENT
+% * position, samples, information, variance
+%
+% logo from 0 to 19
+
+/cmfactor 72 2.54 div def % defines points -> cm conversion
+/cm {cmfactor mul} bind def % defines centimeters
+
+% user defined parameters
+/lowest 0 def
+/highest 19 def
+/bar 0 def
+/xcorner 10.00000 cm def
+/ycorner 20.00000 cm def
+/rotation  0.00000 def % degrees
+/charwidth  0.36000 cm def
+/barheight  4.00000 cm def
+/barwidth  0.05000 cm def
+/barbits -2.00000 def % bits
+/Ibeamfraction  1.00000 def
+/barends true def
+/showingbox (n) def
+/outline false def
+/caps true def
+/stacksperline 20 def
+/linesperpage 1 def
+/linemove  1.00000 def
+/numbering true def
+/shrinking false def
+/edgecontrol ( ) def
+/edgeleft  2.00000 def
+/edgeright  2.00000 def
+/edgelow  2.00000 def
+/edgehigh  2.00000 def
+/shrink  1.00000 def
+/ShowEnds (-) def % d: DNA, p: PROTEIN, -: none
+/HalfWhiteIbeam false def
+
+/knirhs 1 shrink sub 2 div def
+/charwidth4 charwidth 4 div def
+/charwidth2 charwidth 2 div def
+
+/outlinewidth {charwidth 32 div} def
+/setthelinewidth {% set the linewidth
+  outline
+    {outlinewidth setlinewidth}
+    {1 setlinewidth}
+  ifelse
+} def
+/toggleoutline { % switch the state of outlineing
+pop pop pop pop
+/outline outline not def
+setthelinewidth
+} def
+
+% define fonts
+/ffss {findfont fontsize scalefont setfont} def
+/FontForStringRegular {/Times-Bold       ffss} def
+/FontForStringItalic  {/Times-BoldItalic ffss} def
+/FontForLogo          {/Helvetica-Bold   ffss} def
+/FontForPrime         {/Symbol           ffss} def
+/FontForSymbol        {/Symbol           ffss} def
+
+% Set up the font size for the graphics
+/fontsize charwidth def
+
+% movements to place 5' and 3' symbols
+/fivemovex {0} def
+/fivemovey {(0) charparams lx ux sub 3 mul} def
+/threemovex {(0) stringwidth pop 0.5 mul} def
+/threemovey {fivemovey} def
+/prime {FontForPrime (\242) show FontForStringRegular} def
+
+% make italics possible in titles
+/IT {% TRstring ITstring IT -
+  exch show
+  FontForStringItalic
+  show
+  FontForStringRegular
+} def
+
+
+% make symbols possible in titles
+/SY {% TRstring SYstring SY -
+  exch show
+  FontForSymbol
+  show
+  FontForStringRegular
+} def
+
+%(*[[ This special comment allows deletion of the repeated
+% procedures when several logos are concatenated together
+% See the censor program.
+
+/charparams { % char charparams => uy ux ly lx
+% takes a single character and returns the coordinates that
+% defines the outer bounds of where the ink goes
+  gsave
+    newpath
+    0 0 moveto
+    % take the character off the stack and use it here:
+    true charpath 
+    flattenpath 
+    pathbbox % compute bounding box of 1 pt. char => lx ly ux uy
+    % the path is here, but toss it away ...
+  grestore
+  /uy exch def
+  /ux exch def
+  /ly exch def
+  /lx exch def
+} bind def
+
+/dashbox { % xsize ysize dashbox -
+% draw a dashed box of xsize by ysize (in points)
+  /ysize exch def % the y size of the box
+  /xsize exch def % the x size of the box
+  1 setlinewidth
+  gsave
+    % Define the width of the dashed lines for boxes:
+    newpath
+    0 0 moveto
+    xsize 0 lineto
+    xsize ysize lineto
+    0 ysize lineto
+    0 0 lineto
+    [3] 0 setdash
+    stroke
+  grestore
+  setthelinewidth
+} bind def
+
+/boxshow { % xsize ysize char boxshow
+% show the character with a box around it, sizes in points
+gsave
+  /tc exch def % define the character
+  /ysize exch def % the y size of the character
+  /xsize exch def % the x size of the character
+  /xmulfactor 1 def /ymulfactor 1 def
+
+  % if ysize is negative, make everything upside down!
+  ysize 0 lt {
+    % put ysize normal in this orientation
+    /ysize ysize abs def
+    xsize ysize translate
+    180 rotate
+  } if
+
+  shrinking {
+    xsize knirhs mul ysize knirhs mul translate
+    shrink shrink scale
+  } if
+
+  2 {
+    gsave
+    xmulfactor ymulfactor scale
+    tc charparams
+    grestore
+
+    ysize % desired size of character in points
+    uy ly sub % height of character in points
+    dup 0.0 ne {
+      div % factor by which to scale up the character
+      /ymulfactor exch def
+    } % end if
+    {pop pop}
+    ifelse
+
+    xsize % desired size of character in points
+    ux lx sub % width of character in points
+    dup 0.0 ne {
+      div % factor by which to scale up the character
+      /xmulfactor exch def
+    } % end if
+    {pop pop}
+    ifelse
+  } repeat
+
+  % Adjust horizontal position if the symbol is an I
+  tc (I) eq {charwidth 2 div % half of requested character width
+             ux lx sub 2 div % half of the actual character
+                sub      0 translate} if
+  % Avoid x scaling for I
+  tc (I) eq {/xmulfactor 1 def} if
+
+  /xmove xmulfactor lx mul neg def
+  /ymove ymulfactor ly mul neg def
+
+  newpath
+  xmove ymove moveto
+  xmulfactor ymulfactor scale
+
+  outline {  % outline characters:
+setthelinewidth
+    tc true charpath
+    gsave 1 setgray fill grestore
+    clip stroke
+}
+  { % regular characters
+    tc show
+  }
+  ifelse
+grestore
+} def
+
+/numchar{ % charheight character numchar
+% Make a character of given height in cm,
+% then move vertically by that amount
+  gsave
+    /char exch def
+    /charheight exch cm def
+    /visible true def % most characters are visible
+    char (A) eq {0 1 0 setrgbcolor} if
+    char (a) eq {0 1 0 setrgbcolor} if
+    char (C) eq {0 0 1 setrgbcolor} if
+    char (c) eq {0 0 1 setrgbcolor} if
+    char (T) eq {1 0 0 setrgbcolor} if
+    char (t) eq {1 0 0 setrgbcolor} if
+    char (G) eq {1   0.7000 0 setrgbcolor} if
+    char (g) eq {1   0.7000 0 setrgbcolor} if
+    char (*) eq {1 0 0 setrgbcolor} if
+    char (\\) eq {0 1 0 setrgbcolor} if
+    char (\%) eq {0 0 1 setrgbcolor} if
+    char (+) eq {1 0 1 setrgbcolor} if
+     visible {
+       % implement boxes, fill and characters:
+       showingbox (s) eq
+       showingbox (f) eq
+       or
+       {gsave
+           ly lx
+           ly charwidth add
+           lx charheight add
+           boxsymbol
+           clip
+           showingbox (f) eq
+           {fill}  
+           {gsave 0 setgray stroke grestore  
+            charwidth charheight char boxshow
+           }
+           ifelse
+       grestore
+       }
+       {charwidth charheight char boxshow}
+       ifelse
+     } if % visibility control
+  grestore
+  charheight abs 1 gt {0 charheight abs translate} if
+} bind def
+
+/Ibar{
+% make a horizontal bar
+gsave
+  newpath
+    charwidth4 neg 0 moveto
+    charwidth4 0 lineto
+  stroke
+grestore
+} bind def
+
+/Ibeam{ % height Ibeam
+% Make an Ibeam of twice the given height, in cm
+  /height exch cm def
+  /heightDRAW height Ibeamfraction mul def
+  1 setlinewidth
+     HalfWhiteIbeam outline not and
+     {0.75 setgray} % grey on bottom
+     {0 setgray} % black on bottom
+  ifelse
+  gsave
+    charwidth2 height neg translate
+    Ibar
+    newpath
+      0 0 moveto
+      0 heightDRAW rlineto
+    stroke
+    0 setgray % black on top
+    newpath
+      0 height moveto
+      0 height rmoveto
+      currentpoint translate
+    Ibar
+    newpath
+      0 0 moveto
+      0 heightDRAW neg rlineto
+      currentpoint translate
+    stroke
+  grestore
+  setthelinewidth
+} bind def
+
+/makenumber { % number makenumber
+% make the number
+gsave
+  shift % shift to the other side of the stack
+  90 rotate % rotate so the number fits
+  dup stringwidth pop % find the length of the number
+  neg % prepare for move
+  charwidth (0) charparams uy ly sub % height of numbers
+  sub 2 div %
+  moveto % move back to provide space
+  show
+grestore
+} bind def
+
+/shift{ % move to the next horizontal position
+charwidth 0 translate
+} bind def
+
+/bar2 barwidth 2 div def
+/bar2n bar2 neg def
+/makebar { % make a vertical bar at the current location
+gsave
+   bar2n 0 moveto
+   barwidth 0 rlineto
+   0 barheight rlineto
+   barwidth neg 0 rlineto
+   closepath
+   fill
+grestore
+} def
+
+% definitions for maketic
+/str 10 string def % string to hold number
+% points of movement between tic marks:
+% (abs protects against barbits being negative)
+/ticmovement barheight barbits abs div def
+
+/maketic { % make tic marks and numbers
+gsave
+  % initial increment limit proc for
+  0 1 barbits abs cvi
+  {/loopnumber exch def
+
+    % convert the number coming from the loop to a string
+    % and find its width
+    loopnumber 10 str cvrs
+    /stringnumber exch def % string representing the number
+
+    stringnumber stringwidth pop
+    /numberwidth exch def % width of number to show
+
+    /halfnumberheight
+      stringnumber charparams % capture sizes
+      uy ly sub 2 div
+    def
+
+    % define tic mark
+    (4) stringwidth pop
+    /ticwidth exch def % width of tic (as a dash) to show
+
+    numberwidth % move back width of number
+    neg loopnumber ticmovement mul % shift on y axis
+    halfnumberheight sub % down half the digit
+
+    moveto % move back the width of the string
+
+    ticwidth neg 0 rmoveto % move back the width of the tic
+
+    stringnumber show
+
+    % now show the tic mark
+    0 halfnumberheight rmoveto % shift up again
+    ticwidth 0 rlineto
+    stroke
+  } for
+  grestore
+  gsave
+    /labelstring (bits) def
+    numberwidth neg 2.5 mul
+    barheight
+    labelstring stringwidth pop
+    sub 2 div
+    translate
+    90 rotate
+    0 0 moveto
+    labelstring show
+  grestore
+} def
+
+/degpercycle 360 def
+ 
+/drawcosine {% amplitude  phase  wavelength  base
+%              xmin ymin xmax ymax step
+%              dashon dashoff dashoffset thickness
+%              cosine -
+% draws a cosine wave with the given parameters:
+% amplitude (points): height of the wave
+% phase (points): starting point of the wave
+% wavelength (points): length from crest to crest
+% base (points): lowest point of the curve
+% xmin ymin xmax ymax (points): region in which to draw
+% step steps for drawing a cosine wave
+% dashon if greater than zero, size of dashes of the wave (points)
+% dashon dashing on interval (points)
+% dashoff dashing off interval (points)
+% dashoffset offset for dashing (points)
+% thickness if greater than zero, thickness of wave (points)
+% use dashon and dashoff as blank and dashoffset as 0 for solid line
+% See PostScrirt Language Reference Manual 2nd ed p. 500 on dash.
+
+  /thickness exch def
+  /dashoffset exch def
+  /dashoff exch def
+  /dashon exch def
+  /step exch def
+  /ymax exch def
+  /xmax exch def
+  /ymin exch def
+  /xmin exch def
+  /base exch def
+  /wavelength exch def
+  /phase exch def
+  /amplitude exch def
+  % fun := amplitude*cos( ((-y-phase)/wavelength)*360) + base
+  /fun {phase sub wavelength div degpercycle mul cos
+           amplitude mul base add} def
+
+  gsave
+    /originallinewidth currentlinewidth def
+    thickness 0 gt {thickness setlinewidth} if
+
+    % Force the curve to fit into the region specified:
+    newpath
+    xmin ymin moveto
+    xmax ymin lineto
+    xmax ymax lineto
+    xmin ymax lineto
+    closepath
+    clip
+
+    newpath
+    xmin dup fun moveto
+    % go to xmin-1 and xmax+1 to make sure we overlap the
+    % next wave if there is one.  The clip above ensures that it
+    % goes no further than requested. 
+    % loop from xmin-1 to xmax+1 by step:
+    xmin 1 sub step xmax 1 add {dup fun lineto} for
+    % turn dash on if dashon is positive
+    dashon 0 gt {[dashon cvi dashoff cvi] dashoffset setdash} if
+    stroke
+
+    originallinewidth setlinewidth
+  grestore
+} bind def
+
+/circlesymbol { % x y radius circlesymbol - (path)
+newpath 0 360 arc closepath} bind def
+
+/sqrt3 3 sqrt def
+/trianglesymbol { % x y radius trianglesymbol - (path)
+/r exch def
+/sqrt3r sqrt3 r mul def
+translate
+120 rotate
+0 r translate
+-120 rotate
+newpath
+0 0 moveto
+sqrt3r 0 lineto
+-300 rotate
+sqrt3r 0 lineto
+closepath} bind def
+
+/squaresymbol { % x y side squaresymbol - (path)
+/side exch def
+translate
+side 2 div neg dup translate
+newpath
+0 0 moveto
+0 side lineto
+side side lineto
+side 0 lineto
+closepath} bind def
+
+/linesymbol { % x1 y1 x2 y2 linesymbol - (path)
+/y2 exch def
+/x2 exch def
+/y1 exch def
+/x1 exch def
+newpath
+x1 y1 moveto
+x2 y2 lineto
+} bind def
+
+/boxsymbol { % x1 y1 x2 y2 boxsymbol - (path)
+/y2 exch def
+/x2 exch def
+/y1 exch def
+/x1 exch def
+newpath
+x1 y1 moveto
+x2 y1 lineto
+x2 y2 lineto
+x1 y2 lineto
+closepath
+} bind def
+
+% The following special comment allows deletion of the repeated
+% procedures when several logos are concatenated together
+% See the censor program.
+%]]%*)
+
+/startpage { % start a page
+  save % [ startpage
+  % set the font used in the title strings
+  FontForStringRegular
+  gsave % [ startpage
+  xcorner ycorner translate
+  rotation rotate
+  % create the user defined strings
+  gsave
+    /stringscale  0.00000 def
+     0.00000 cm  0.00000 cm moveto
+    stringscale stringscale scale
+    ( 1 2 1)
+    show
+  grestore
+  gsave
+    /stringscale  0.00000 def
+     0.00000 cm  0.00000 cm moveto
+    stringscale stringscale scale
+    (akelogop: parameters for the makelogo program, version 8.76 or higher)
+    show
+  grestore
+  % now move up to the top of the top line:
+  0 linesperpage linemove barheight mul mul translate
+
+  % set the font used in the logos
+  FontForLogo
+} def
+
+%(*[[ This special comment allows deletion of the repeated
+% procedures when several logos are concatenated together
+% See the censor program.
+
+/endpage { % end a page
+  grestore % ] endpage
+  showpage % REMOVE FOR PACKAGING INTO ANOTHER FIGURE
+  restore % ] endpage
+} def
+
+/showleftend {
+gsave
+ charwidth neg 0 translate
+ fivemovex fivemovey moveto ShowEnds (d) eq {(5) show prime} if
+ ShowEnds (p) eq {(N) show} if
+grestore
+} def
+
+/showrightend {
+gsave
+ threemovex threemovey moveto ShowEnds (d) eq {(3) show prime} if
+ ShowEnds (p) eq {(C) show} if
+grestore
+} def
+
+/startline{ % start a line
+% move down to the bottom of the line:
+  0 linemove barheight mul neg translate
+  gsave % [ startline
+  barends {
+    maketic % maketic.startline
+    gsave
+      bar2n 0 translate % makebar.startline
+      makebar % makebar.startline
+    grestore
+  } if
+  showleftend
+} def
+
+/endline{ % end a line
+  showrightend
+  barends {
+    gsave
+      bar2 0 translate % makebar.endline
+      makebar % makebar.endline
+    grestore
+  } if
+  grestore % ] startline
+} def
+
+% @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+% @@@@@@@@@@@@@@@@@@@@ End of procedures @@@@@@@@@@@@@@@@@@@
+% @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+% The following special comment allows deletion of the repeated
+% procedures when several logos are concatenated together
+% See the censor program.
+%]]%*)
+
+%%EndProlog
+
+%%Page: 1 1
+startpage % [
+startline % line number 1
+% at coordinate 0
+numbering {(0) makenumber} if
+gsave
+ 0.16244 (G) numchar
+ 0.16244 (C) numchar
+ 0.29240 (T) numchar
+grestore
+shift
+% at coordinate 1
+numbering {(1) makenumber} if
+gsave
+ 0.00257 (G) numchar
+ 0.00257 (C) numchar
+ 0.00343 (A) numchar
+ 0.00771 (T) numchar
+grestore
+shift
+% at coordinate 2
+numbering {(2) makenumber} if
+gsave
+ 0.02728 (T) numchar
+ 0.08184 (A) numchar
+ 0.10912 (C) numchar
+ 0.30009 (G) numchar
+grestore
+shift
+% at coordinate 3
+numbering {(3) makenumber} if
+gsave
+ 0.45915 (A) numchar
+ 1.72179 (G) numchar
+grestore
+shift
+% at coordinate 4
+numbering {(4) makenumber} if
+gsave
+ 0.38012 (T) numchar
+ 2.02730 (G) numchar
+grestore
+shift
+% at coordinate 5
+numbering {(5) makenumber} if
+gsave
+ 3.66592 (G) numchar
+grestore
+shift
+% at coordinate 6
+numbering {(6) makenumber} if
+gsave
+ 0.16163 (T) numchar
+ 2.90935 (A) numchar
+grestore
+shift
+% at coordinate 7
+numbering {(7) makenumber} if
+gsave
+ 3.66592 (C) numchar
+grestore
+shift
+% at coordinate 8
+numbering {(8) makenumber} if
+gsave
+ 0.02380 (A) numchar
+ 0.04761 (G) numchar
+ 0.16662 (T) numchar
+ 0.21423 (C) numchar
+grestore
+shift
+% at coordinate 9
+numbering {(9) makenumber} if
+gsave
+ 0.10725 (G) numchar
+ 0.32175 (A) numchar
+ 0.58987 (T) numchar
+grestore
+shift
+% at coordinate 10
+numbering {(10) makenumber} if
+gsave
+ 0.12631 (C) numchar
+ 0.25262 (T) numchar
+ 0.42103 (A) numchar
+grestore
+shift
+% at coordinate 11
+numbering {(11) makenumber} if
+gsave
+ 0.12780 (T) numchar
+ 0.22365 (A) numchar
+ 0.25560 (C) numchar
+grestore
+shift
+% at coordinate 12
+numbering {(12) makenumber} if
+gsave
+ 0.16163 (T) numchar
+ 2.90935 (G) numchar
+grestore
+shift
+% at coordinate 13
+numbering {(13) makenumber} if
+shift
+% at coordinate 14
+numbering {(14) makenumber} if
+gsave
+ 3.66592 (C) numchar
+grestore
+shift
+% at coordinate 15
+numbering {(15) makenumber} if
+gsave
+ 0.28368 (T) numchar
+ 2.41132 (C) numchar
+grestore
+shift
+% at coordinate 16
+numbering {(16) makenumber} if
+gsave
+ 0.11144 (G) numchar
+ 0.22289 (A) numchar
+ 1.78311 (C) numchar
+grestore
+shift
+% at coordinate 17
+numbering {(17) makenumber} if
+gsave
+ 0.07005 (A) numchar
+ 0.42033 (C) numchar
+ 0.84066 (T) numchar
+grestore
+shift
+% at coordinate 18
+numbering {(18) makenumber} if
+gsave
+ 0.01612 (C) numchar
+ 0.04836 (T) numchar
+ 0.09672 (G) numchar
+ 0.14508 (A) numchar
+grestore
+shift
+% at coordinate 19
+numbering {(19) makenumber} if
+gsave
+ 0.02316 (C) numchar
+ 0.03473 (A) numchar
+ 0.04631 (T) numchar
+ 0.11578 (G) numchar
+grestore
+shift
+endline
+endpage % ]
+% %%Trailer
+%%Pages: 1
